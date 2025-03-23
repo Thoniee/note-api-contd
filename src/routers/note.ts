@@ -42,3 +42,16 @@ router.delete('/:id', (req: CustomRequest, res) => {
         id: req.params.id,
     });
 } );
+
+const notes: { id: string; userId: string; content: string }[] = [];
+
+app.post('/api/notes', authenticateUser, (req: Request, res: Response) => {
+  const note = { id: Date.now().toString(), userId: req.user.id, content: req.body.content };
+  notes.push(note);
+  res.status(201).json(note);
+});
+
+app.get('/api/notes', authenticateUser, (req: Request, res: Response) => {
+  const userNotes = notes.filter(note => note.userId === req.user.id);
+  res.json(userNotes);
+});

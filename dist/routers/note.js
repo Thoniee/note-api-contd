@@ -33,4 +33,14 @@ exports.router.get('/', (req, res) => {
             id: req.params.id,
         });
     }));
+    const notes = [];
+    app.post('/api/notes', authenticateUser, (req, res) => {
+        const note = { id: Date.now().toString(), userId: req.user.id, content: req.body.content };
+        notes.push(note);
+        res.status(201).json(note);
+    });
+    app.get('/api/notes', authenticateUser, (req, res) => {
+        const userNotes = notes.filter(note => note.userId === req.user.id);
+        res.json(userNotes);
+    });
 });
